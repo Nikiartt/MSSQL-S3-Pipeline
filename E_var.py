@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings ,SettingsConfigDict
 
-class Settings(BaseSettings):#Class takes data from .env and returns it accordingly to scheme
+class Settings(BaseSettings):
     bucket:str
     accesskey:str
     secretaccesskey:str
