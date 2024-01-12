@@ -16,7 +16,7 @@ def upload_s3():
         response=client.generate_presigned_post(
             Bucket =settings.bucket,
             Key=filename,
-            ExpiresIn =settings.expires)   #Time for request in seconds
+            ExpiresIn =settings.expires)
 
         file={'file': open(filename)}
         request=requests.post(response['url'],data=response['fields'],files=file)
