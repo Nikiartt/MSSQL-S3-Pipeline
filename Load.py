@@ -1,6 +1,8 @@
 from Connection_MsSQL import cursor,conn
 import pandas as pd
+import time
 
+start_time=time.time()
 df_all=pd.read_csv('data\WHO-COVID-19-global-data.csv')
 df_all['Country'] = df_all['Country'].str.replace(r"'", " ")
 df_all['WHO_region'] = df_all['WHO_region'].str.replace(r"'", " ")
@@ -30,4 +32,7 @@ for i in range(len(df_all)):
                         ''')
         conn.commit()
     except Exception as e :
-        print(f'error in {i}',e) 
+        print(f'error in {i}',e)
+
+end_time=time.time()-start_time
+print('The load time is',end_time,'seconds')
