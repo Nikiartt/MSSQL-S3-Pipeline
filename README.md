@@ -1,4 +1,4 @@
-# Documents Processing pipeline
+# Documents Processing Pipeline
 
 # Introduction & Goals
 This project combined tools like Jupyter/Pyspark-notebook, bitnami/Kafka image, FastAPI, Asyncio, Aiohttp, MongoDB image, SQLAlchemy, Postgres, Airflow image and the Docker.
@@ -37,7 +37,7 @@ This feature allows you to run this application on any OS.
 
 ## Connection
  The main part of the inner connection was built in the Docker container using Docker ports and network. Probably all the bounds were defined in the docker-compose file.
- For the external connection and client simulation FastAPI, Aiohttp and Asyncio were used. Client simulation code had two tasks: to send a large number of requests, estimate the number of errors, and sort the invalid JSON requests.\
+ For the external connection and client simulation FastAPI, Aiohttp, and Asyncio were used. Client simulation code had two tasks: to send a large number of requests, estimate the number of errors, and sort the invalid JSON requests.\
  From the Spark in the project, I used SparkSession, readStream&writeStream, DataFrame tools, and SQL queries. For document formation, the foreachBatch function was added. For the Postgres connection, SQLAlchemy was used.
  
 ## Buffer
@@ -47,16 +47,16 @@ BitnamiKafka image was used as a buffer. API was set on the producer's side and 
  Mongo and Mongo-express images can work as the NoSQL database and user interface. The client can easily connect to MongoDB using credentials from docker-compose and browser. The Mongo-express can be used to adjust the collections in the database.
 
 # Pipeline
-As was mentioned above, the pipeline consists of API application, BitnamiKafka, and Spark. The pipeline was pusshed to the Docker container. The advabtage of this pipeline is that all its components are stored in the container as wel as the data processing code can be modified through the API connection to Jupiter Notebook container.
+As was mentioned above, the pipeline consists of API applications, BitnamiKafka, and Spark. The pipeline was pushed to the Docker container. The advantage of this pipeline is that all its components are stored in the container as well as the data processing code can be modified through the API connection to Jupiter Notebook container.
 
 ## Authentication
-Authentication was created using FastAIP, SQLAlchemy, and Postgres. A client has to provide the username and password as a JSON string. This data will pass through schema and after SQLAlchemy will send it to Postgres. The password is stored in hash form in Postgres for security purposes. Using the same credentials the client can request the token using a separate API URL. Only by providing the token in the header section client has ability to send the documents in the main pipeline. Authentication slows down the velocity of the pipeline by 50 percent.
+Authentication was created using FastAIP, SQLAlchemy, and Postgres. A client has to provide the username and password as a JSON string. This data will pass through schema and after SQLAlchemy will send it to Postgres. The password is stored in hash form in Postgres for security purposes. Using the same credentials the client can request the token using a separate API URL. Only by providing the token in the header section client can send the documents in the main pipeline. Authentication slows down the velocity of the pipeline by 50 percent.
 
 ## Airflow
 The docker-compose file base was used from the airflow docker-compose file that can be created by the command: curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.8.0/docker-compose.yaml'. As was mentioned above, Airflow in this project stored information about the amount of users that can request a token. For testing purposes, Airflow work was scheduled for each minute activation. 
 
 # Pipeline testing
-There was built special Asynchronous_api_client  and api_client scripts for testing purposes. This Asynchronous_api_client has two main features. The first one is the simulation of the loaded stream. The second feature is to estimate the speed and the proper work of the pipeline. We have to consider that the speed depends mostly on the computer resources and system adjustments. In the test of the pipeline, 5000 requests were used. 1254 requests  were unable to pass, since some fields had a None value which was not allowed in the Base model of API (some documents also had other reasons for rejection). To pass 3746 and reject 1254 documents, the pipeline took around 253 seconds. So the speed was around 20 requests per second on the machine with 16Ram and Intel(R) Core(TM) i5-6500 CPU 3.20GHz. All the documents were stored in MongoDB without any losses. 
+There was built special Asynchronous_api_client  and api_client scripts for testing purposes. This Asynchronous_api_client has two main features. The first one is the simulation of the loaded stream. The second feature is to estimate the speed and the proper work of the pipeline. We have to consider that the speed depends mostly on the computer resources and system adjustments. In the test of the pipeline, 5000 requests were used. 1254 requests  were unable to pass since some fields had a None value which was not allowed in the Base model of API (some documents also had other reasons for rejection). To pass 3746 and reject 1254 documents, the pipeline took around 253 seconds. So the speed was around 20 requests per second on the machine with 16Ram and Intel(R) Core(TM) i5-6500 CPU 3.20GHz. All the documents were stored in MongoDB without any losses. 
 
 # Conclusion
 This project allowed me to learn the basics of configurations in docker, Api connection, and data transformation. Also, this project estimated the speed of the pipeline, 20 Json documents per second without errors from the pipeline side.
